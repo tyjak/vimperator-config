@@ -1,0 +1,146 @@
+"2.0 (created: 2009/03/28 23:48:07)
+
+map h gT
+map l gt
+map ,w :so ~/_vimperatorrc<CR>
+set toolbars=notabs
+set noscrollbars
+"set showtabline=0
+set editor="/usr/local/bin/mvim -f"
+set defsearch="yubnub"
+
+"javascript global
+javascript <<EOF
+	doc=window.content.window.document;
+	win=window.content.window;
+EOF
+
+javascript <<EOF
+    toggle_element = function (name) {
+        document.getElementById(name).collapsed ^= 1;
+    }
+EOF
+map <C-T> javascript toggle_element('webdeveloper-toolbar')<CR>
+
+
+"source! ~/.vimperatorrc.local
+
+"screenshot
+javascript <<EOF
+scrshot = function(){var b=doc.body,e=doc.documentElement,h=100,s=self,y=0,w=win;if(s.pageYOffset)y=s.pageYOffset;else if(e && e.scrollTop)y=e.scrollTop;else if(b)y=b.scrollTop;if(w.innerHeight && w.scrollMaxY)h=w.innerHeight+w.scrollMaxY;else if(b.scrollHeight > b.offsetHeight)h=b.scrollHeight;else h=b.offsetHeight;win.location.href='http://kwout.com/grab?address='+encodeURIComponent(win.location.href)+'&scroll='+(y/h);};
+EOF
+command! scrshot javascript scrshot()
+map ,,c :scrshot<CR>
+
+"traduction
+javascript <<EOF
+traduction = function(){
+		var t=(
+			(win.getSelection&&win.getSelection())
+			||(doc.getSelection&&doc.getSelection())
+			||(doc.selection&&doc.selection.createRange&&doc.selection.createRange().text)
+			);
+		var e=(doc.charset||doc.characterSet);
+		if(t!=''){
+			win.location.href='http://translate.google.com/?text='+encodeURI(t)+'&hl=en&langpair=auto|en&tbb=1&ie='+e;
+		} else{
+			win.location.href='http://translate.google.com/translate?u='+escape(win.location)+'&hl=en&langpair=auto|en&tbb=1&ie='+e;
+		}
+	}
+EOF
+command! tr javascript traduction()
+map ,,t :tr<CR>
+
+"shareFriendFeed
+javascript <<EOF
+shareFfeed = function(){void((function(){var e=window.content.window.document.createElement('script');e.setAttribute('type','text/javascript');e.setAttribute('src','http://friendfeed.com/share/bookmarklet/javascript');window.content.window.document.body.appendChild(e)})())}
+EOF
+
+command! shareFfeed js shareFfeed()
+map ,,b :js shareFfeed()<CR>
+
+"shareDelicious
+javascript <<EOF
+shareDel=function(){f='http://delicious.com/save?url='+encodeURIComponent(window.content.window.document.location.href)+'&title='+encodeURIComponent(window.content.window.document.title)+'&notes='+encodeURIComponent(window.content.window.document.getSelection())+'&message='+encodeURIComponent(window.content.window.document.getSelection().substr(0,96).replace(/\s\w*$/,'')+'[...]')+'&';a=function(){if(!window.open(f+'noui=1&jump=doclose','deliciousuiv5','location=yes,links=no,scrollbars=no,toolbar=no,width=550,height=550'))window.content.window.document.location.href=f+'jump=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}}
+EOF
+command! shareDel js shareDel()
+map ,,d :javascript shareDel()<CR>
+
+"shareAmazon
+javascript <<EOF
+shareAmazon=function(){window.top.getBrowser().loadURI("javascript:var w=window,l=w.location,d=w.document,s=d.createElement('script'),e=encodeURIComponent,x='undefined',u='http://www.amazon.com/wishlist/add';if(typeof s!='object')l.href=u+'?u='+e(l)+'&t='+e(d.title);function g(){if(d.readyState&&d.readyState!='complete'){setTimeout(g,200);}else{if(typeof AUWLBook==x)s.setAttribute('src',u+'.js?loc='+e(l)),d.body.appendChild(s);function f(){(typeof AUWLBook==x)?setTimeout(f,200):AUWLBook.showPopover();};f();}};g();")}
+EOF
+command! shareAmazon js shareAmazon()<CR>
+map ,,a :javascript shareAmazon()<CR>
+
+"GoogleReader
+javascript <<EOF
+shareReader=function(){var b=window.content.window.document.body;var GR________bookmarklet_domain='http://www.google.com';if(b&&!window.content.window.document.xmlVersion){void(z=window.content.window.document.createElement('script'));void(z.src='http://www.google.com/reader/ui/subscribe-bookmarklet.js');void(b.appendChild(z));}else{location='http://www.google.com/reader/view/feed/'+encodeURIComponent(window.content.window.document.location.href)}}
+EOF
+command! shareReader js shareReader()<CR>
+map ,,r :javascript shareReader()<CR>
+
+"Facebook
+javascript <<EOF
+shareFacebook=function(){var d=window.content.window.document,f='http://www.facebook.com/share',l=d.location,e=encodeURIComponent,p='.php?src=bm&v=4&i=1241560119&u='+e(l.href)+'&t='+e(d.title);1;try{if (!/^(.*\.)?facebook\.[^.]*$/.test(l.host))throw(0);share_internal_bookmarklet(p)}catch(z) {a=function() {if (!window.open(f+'r'+p,'sharer','toolbar=0,status=0,resizable=1,width=626,height=436'))l.href=f+p};if (/Firefox/.test(navigator.userAgent))setTimeout(a,0);else{a()}}void(0)}
+EOF
+
+command! shareFacebook js shareFacebook()
+map ,,f :javascript shareFacebook()<CR>
+
+"Posterous
+javascript <<EOF
+sharePosterous=function(){window.top.getBrowser().loadURI("javascript:var b=document.body;var POSTEROUS___bookmarklet_domain='http://posterous.com';if(b&&!document.xmlVersion){void(z=document.createElement('script'));void(z.type='text/javascript');void(z.src='http://posterous.com/javascripts/bookmarklet2.js');void(b.appendChild(z));}else{}")}
+EOF
+command! sharePosterous js sharePosterous()
+map ,,p :javascript sharePosterous()<CR>
+
+"instapaper
+javascript <<EOF
+readLater=function (){var d=window.content.window.document,z=d.createElement('scr'+'ipt'),b=d.body;try{if(!b)throw(0);d.title='(Saving...) '+d.title;z.setAttribute('src','http://www.instapaper.com/j/Qn6obEE5qPiT?u='+encodeURIComponent(d.location.href)+'&t='+(new Date().getTime()));b.appendChild(z);}catch(e){alert('Please wait until the page has loaded.');}}
+EOF
+command! readLater javascript readLater()
+map ,,i :readLater<CR>
+
+"bespin (code editor)
+javascript <<EOF
+var testeditor=function(){var elem=window.content.window.document.createElement('script');elem.setAttribute('src','https://bespin.mozillalabs.com/bookmarklet/bookmarklet.js');window.content.window.document.body.appendChild(elem);}
+EOF
+
+"Privoxy
+command! privoxyOn open http://config.privoxy.org/toggle?set=enable
+command! privoxyOff open http://config.privoxy.org/toggle?set=disable
+
+"buzz
+javascript <<EOF
+buzzThis=function(){window.top.getBrowser().loadURI("javascript:var%20b=document.body;var%20GR________bookmarklet_domain='http://www.google.com';if(b&&!document.xmlVersion){void(z=document.createElement('script'));void(z.src='http://www.google.com/reader/ui/link-bookmarklet.js');void(b.appendChild(z));}else{}");}
+EOF
+command! buzz javascript buzzThis()
+map ,,g :buzz<CR>
+
+"Aviary
+javascript <<EOF
+screenShot=function(){window.content.window.location='http://aviary.com/' + window.content.window.location.href;}
+EOF
+command! screenShot :js screenShot()<CR>
+
+"Statusline
+javascript <<EOF
+(function(){
+    var feedPanel = document.createElement("statusbarpanel");
+    feedPanel.setAttribute("id", "feed-panel-clone");
+    feedPanel.appendChild(document.getElementById("feed-button"));
+    feedPanel.firstChild.setAttribute("style", "padding: 0; max-height: 16px;");
+    document.getElementById("status-bar")
+            .insertBefore(feedPanel, document.getElementById("security-button"));
+})();
+EOF
+
+map <silent> fb :firebug toggle<CR>
+
+"map <silent> <Up> :ls<CR>
+"You mybe need to replace "window" to "window.content.document.window"
+"and replace "document" to "window.content.document"
+
+
+" vim: set ft=vimperator:
